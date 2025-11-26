@@ -1,0 +1,127 @@
+
+
+<section class="product-page py-5">
+    <div class="container">
+        <nav aria-label="breadcrumb" class="mb-4">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="index.php">Home</a></li>
+                <li class="breadcrumb-item"><a href="search.php">Products</a></li>
+                <li class="breadcrumb-item active">Product <?php echo htmlspecialchars($product_id); ?></li>
+            </ol>
+        </nav>
+
+        <div class="row">
+            <div class="col-md-5">
+                <div class="card mb-3">
+                    <img src="assets/logo.png" class="card-img" alt="Product" style="max-height: 500px; object-fit: contain; padding: 20px;">
+                </div>
+                <div class="row g-2">
+                    <?php for ($i = 0; $i < 4; $i++): ?>
+                    <div class="col-3">
+                        <img src="assets/logo.png" class="img-thumbnail" alt="Thumbnail" style="cursor: pointer;">
+                    </div>
+                    <?php endfor; ?>
+                </div>
+            </div>
+
+            <div class="col-md-7">
+                <h1>Product <?php echo htmlspecialchars($product_id); ?></h1>
+                <div class="mb-3">
+                    <span class="badge bg-warning text-dark me-2">In Stock</span>
+                    <span class="badge bg-info">Free Shipping</span>
+                </div>
+
+                <div class="rating mb-3">
+                    <i class="fas fa-star" style="color: #FFC107;"></i>
+                    <i class="fas fa-star" style="color: #FFC107;"></i>
+                    <i class="fas fa-star" style="color: #FFC107;"></i>
+                    <i class="fas fa-star" style="color: #FFC107;"></i>
+                    <i class="fas fa-star-half-alt" style="color: #FFC107;"></i>
+                    <span class="ms-2">(245 reviews)</span>
+                </div>
+
+                <div class="price-section mb-4">
+                    <h2 class="text-danger">$299.99 <del class="text-muted h5">$399.99</del></h2>
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="badge bg-danger">-25% OFF</span>
+                        <span class="text-muted">Save $100</span>
+                    </div>
+                </div>
+
+                <p class="text-muted mb-4">
+                    This is a premium product with excellent features and high quality components. 
+                    Perfect for professionals and enthusiasts alike.
+                </p>
+
+                <div class="mb-4">
+                    <h6>Specifications:</h6>
+                    <ul class="list-unstyled">
+                        <li><strong>Brand:</strong> TechBrand</li>
+                        <li><strong>Model:</strong> TB-2024</li>
+                        <li><strong>Color:</strong> Black</li>
+                        <li><strong>Warranty:</strong> 2 Years</li>
+                    </ul>
+                </div>
+
+                <div class="product-actions mb-4">
+                    <div class="d-flex gap-3 align-items-center">
+                        <div>
+                            <label for="quantity" class="form-label">Quantity:</label>
+                            <input type="number" id="quantity" class="form-control" value="1" min="1" style="width: 80px;">
+                        </div>
+                        <button class="btn btn-primary btn-lg"><i class="fas fa-shopping-cart me-2"></i>Add to Cart</button>
+                        <button class="btn btn-outline-secondary btn-lg"><i class="far fa-heart"></i></button>
+                    </div>
+                </div>
+
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h6 class="card-title">Shipping Information</h6>
+                        <p class="card-text">
+                            <i class="fas fa-truck me-2"></i> Free Standard Shipping<br>
+                            <i class="fas fa-check me-2"></i> Delivery in 3-5 business days<br>
+                            <i class="fas fa-undo me-2"></i> 30-day return policy
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Reviews Section -->
+        <div class="row mt-5">
+            <div class="col-md-12">
+                <h3 class="mb-4">Customer Reviews</h3>
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <div>
+                                <strong>John Doe</strong>
+                                <div class="text-warning" style="font-size: 0.9rem;">
+                                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                                </div>
+                            </div>
+                            <small class="text-muted">2 days ago</small>
+                        </div>
+                        <p class="card-text">Excellent product! Highly recommended. Best purchase I've made this year.</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <div>
+                                <strong>Jane Smith</strong>
+                                <div class="text-warning" style="font-size: 0.9rem;">
+                                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                                </div>
+                            </div>
+                            <small class="text-muted">1 week ago</small>
+                        </div>
+                        <p class="card-text">Very good quality. Arrived on time as promised. Would buy again!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+

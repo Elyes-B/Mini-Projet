@@ -1,0 +1,125 @@
+
+
+    <section class="search-page py-5">
+        <div class="container">
+            <div class="row">
+                <aside class="col-md-3">
+                    <div class="card p-3 mb-4">
+                        <h5 class="mb-3">Filters</h5>
+                        <div class="mb-3">
+                            <label class="form-label">Price</label>
+                            <div class="d-flex gap-2">
+                                <input type="number" class="form-control" placeholder="Min" id="minPrice">
+                                <input type="number" class="form-control" placeholder="Max" id="maxPrice">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Brand / Manufacturer</label>
+                            <div>
+                                <?php
+                                $brands = ['Apple', 'Samsung', 'Dell', 'Sony', 'Logitech'];
+                                foreach ($brands as $brand) {
+                                    echo '<div class="form-check">';
+                                    echo '<input class="form-check-input" type="checkbox" id="brand-' . htmlspecialchars($brand) . '" value="' . htmlspecialchars($brand) . '">';
+                                    echo '<label class="form-check-label" for="brand-' . htmlspecialchars($brand) . '">' . htmlspecialchars($brand) . '</label>';
+                                    echo '</div>';
+                                }
+                                ?>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Customer Rating</label>
+                            <div>
+                                <?php
+                                $ratings = [
+                                    ['value' => 4, 'label' => '4 Stars & Up'],
+                                    ['value' => 3, 'label' => '3 Stars & Up']
+                                ];
+                                foreach ($ratings as $rating) {
+                                    echo '<div class="form-check">';
+                                    echo '<input class="form-check-input" type="radio" name="rating" id="rating-' . htmlspecialchars($rating['value']) . '" value="' . htmlspecialchars($rating['value']) . '">';
+                                    echo '<label class="form-check-label" for="rating-' . htmlspecialchars($rating['value']) . '">' . htmlspecialchars($rating['label']) . '</label>';
+                                    echo '</div>';
+                                }
+                                ?>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Availability</label>
+                            <div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" id="avail-all" value="all" name="availability" checked>
+                                    <label class="form-check-label" for="avail-all">All</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" id="avail-instock" value="in-stock" name="availability">
+                                    <label class="form-check-label" for="avail-instock">In Stock Only</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" id="avail-preorder" value="pre-order" name="availability">
+                                    <label class="form-check-label" for="avail-preorder">Available for Pre-Order</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Tags</label>
+                            <div class="d-flex flex-wrap gap-2">
+                                <?php
+                                $tags = ['new','hot','sale','popular'];
+                                foreach ($tags as $tag) {
+                                    echo '<button class="btn btn-sm btn-outline-secondary" data-tag="' . htmlspecialchars($tag) . '">' . htmlspecialchars($tag) . '</button>';
+                                }
+                                ?>
+                            </div>
+                        </div>
+
+                        <div class="d-grid">
+                            <button class="btn btn-primary" id="applyFiltersBtn">Apply</button>
+                        </div>
+                    </div>
+                </aside>
+
+                <main class="col-md-9">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div>
+                            <h4 class="mb-0">Search results</h4>
+                            <small class="text-muted">Showing 12 products (design-only)</small>
+                        </div>
+                        <div>
+                            <select class="form-select form-select-sm" style="width: 200px;" id="sortBy">
+                                <option value="relevance">Sort by: Relevance</option>
+                                <option value="price-asc">Price: Low to High</option>
+                                <option value="price-desc">Price: High to Low</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row g-3" id="searchResultsContainer">
+                        <?php for ($n = 1; $n <= 12; $n++): ?>
+                            <div class="col-sm-6 col-md-4">
+                                <a href="product.php?id=<?php echo $n; ?>" class="text-decoration-none text-reset">
+                                    <div class="card h-100 product-card p-3">
+                                        <img src="assets/logo.png" class="card-img-top mx-auto d-block" alt="product" style="max-width:120px;">
+                                        <div class="card-body p-2 text-center">
+                                            <h6 class="card-title mb-1">Product <?php echo $n; ?></h6>
+                                            <p class="text-muted mb-2">Category • Tag</p>
+                                            <div class="d-flex justify-content-center gap-2">
+                                                <span class="text-decoration-line-through text-muted">$320</span>
+                                                <span class="text-danger fw-bold">$299</span>
+                                            </div>
+                                        </div>
+                                        <div class="card-footer bg-transparent border-0 text-center">
+                                            <button class="btn btn-sm btn-outline-primary">Add to cart</button>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        <?php endfor; ?>
+                    </div>
+                </main>
+            </div>
+        </div>
+    </section>

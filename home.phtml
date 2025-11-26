@@ -1,0 +1,255 @@
+
+
+<!-- Hero Section -->
+<div class="hero-section bg-light py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 text-center text-md-start">
+                <h1 class="display-4 mb-4">NEW ERA OF SMARTPHONES</h1>
+                <div class="price-tag mb-4">
+                    <span class="old-price">$530</span>
+                    <span class="new-price">$460</span>
+                </div>
+                <h2 class="h4 mb-4">Apple iPhone 6s</h2>
+                <a href="product.php?id=iphone-6s" class="btn btn-primary btn-lg">Shop Now</a>
+            </div>
+            <div class="col-md-6 d-flex justify-content-center align-items-center">
+                <a href="product.php?id=iphone-6s" class="text-decoration-none text-reset">
+                    <img src="assets/logo.png" alt="iPhone 6s" class="img-fluid" style="max-height: 400px; object-fit: contain;">
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Categories Section -->
+<section class="categories-section py-5">
+    <div class="container">
+        <h2 class="text-center mb-4">Popular Categories</h2>
+        <div class="row g-4 d-flex justify-content-center">
+            <?php
+            $categories = [
+                ['id' => 1, 'name' => 'Smartphones & Tablets', 'icon' => 'fas fa-mobile-alt'],
+                ['id' => 2, 'name' => 'Computers & Laptops', 'icon' => 'fas fa-laptop'],
+                ['id' => 3, 'name' => 'Video Games', 'icon' => 'fas fa-gamepad'],
+                ['id' => 4, 'name' => 'Accessories', 'icon' => 'fas fa-headphones'],
+                ['id' => 5, 'name' => 'More', 'icon' => 'fas fa-ellipsis-h']
+            ];
+            foreach ($categories as $category):
+            ?>
+            <div class="col-md-2 col-sm-4 col-6">
+                <div class="category-card text-center">
+                    <div class="icon-wrapper mb-3">
+                        <i class="<?php echo $category['icon']; ?>"></i>
+                    </div>
+                    <h3 class="h6"><?php echo $category['name']; ?></h3>
+                </div>
+            </div>
+            <?php endforeach; ?>
+        </div>
+    </div>
+</section>
+
+<!-- Deals Section -->
+<section class="deals-section py-5 bg-light">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Echo Deals of the Week</h2>
+        </div>
+
+        <div class="deal-card bg-white p-4 rounded">
+            <div id="dealsCarousel" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    <?php
+                    $deals = [
+                        ['id' => 1, 'name' => 'Beoplay H7', 'category' => 'Headphones', 'oldPrice' => 300, 'newPrice' => 225, 'available' => 6, 'sold' => 28],
+                        ['id' => 2, 'name' => 'Acer Aspire 5', 'category' => 'Laptops', 'oldPrice' => 799, 'newPrice' => 659, 'available' => 12, 'sold' => 43],
+                        ['id' => 3, 'name' => 'Canon EOS M50', 'category' => 'Cameras', 'oldPrice' => 649, 'newPrice' => 579, 'available' => 4, 'sold' => 19],
+                        ['id' => 4, 'name' => 'Samsung Galaxy Tab', 'category' => 'Tablets', 'oldPrice' => 399, 'newPrice' => 349, 'available' => 20, 'sold' => 77]
+                    ];
+                    foreach ($deals as $idx => $deal):
+                    ?>
+                    <div class="carousel-item <?php echo $idx === 0 ? 'active' : ''; ?>">
+                        <div class="row align-items-center">
+                            <div class="col-md-6 text-center">
+                                <a href="product.php?id=<?php echo $deal['id']; ?>" class="text-decoration-none text-reset">
+                                    <img src="assets/logo.png" alt="<?php echo htmlspecialchars($deal['name']); ?>" class="img-fluid" style="max-height:320px; object-fit:contain;">
+                                </a>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="category-tag mb-2"><?php echo $deal['category']; ?></div>
+                                <h3 class="h4 mb-3"><?php echo htmlspecialchars($deal['name']); ?></h3>
+                                <div class="price-section mb-4">
+                                    <span class="old-price me-2">$<?php echo $deal['oldPrice']; ?></span>
+                                    <span class="new-price">$<?php echo $deal['newPrice']; ?></span>
+                                </div>
+                                <div class="stock-info mb-4">
+                                    <span>Available: <?php echo $deal['available']; ?></span>
+                                    <span class="mx-3">|</span>
+                                    <a href="product.php?id=<?php echo $deal['id']; ?>" class="btn btn-primary btn-lg">Shop Now</a>
+                            </div>
+                        </div>
+                    </div>
+                    <?php endforeach; ?>
+                </div>
+
+                <button class="carousel-control-prev" type="button" data-bs-target="#dealsCarousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#dealsCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Products Section -->
+<section class="featured-products py-5">
+    <div class="container">
+        <div class="tabs-header mb-4">
+            <ul class="nav nav-tabs justify-content-center">
+                <li class="nav-item">
+                    <a class="nav-link active" href="#" data-tab="featured">Featured</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" data-tab="on-sale">On Sale</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" data-tab="best-rated">Best Rated</a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="row g-4">
+            <?php
+            $products = [
+                ['id' => 1, 'name' => 'Huawei MediaPad', 'price' => 225, 'oldPrice' => 300, 'badge' => '-25%', 'category' => 'featured'],
+                ['id' => 2, 'name' => 'Sony MDRZX310W', 'price' => 379, 'oldPrice' => null, 'badge' => null, 'category' => 'best-rated'],
+                ['id' => 3, 'name' => 'Canon STM Kit', 'price' => 225, 'oldPrice' => null, 'badge' => null, 'category' => 'featured'],
+                ['id' => 4, 'name' => 'Lenovo IdeaPad', 'price' => 379, 'oldPrice' => null, 'badge' => 'new', 'category' => 'on-sale']
+            ];
+            foreach ($products as $product):
+            ?>
+            <div class="col-md-3 col-sm-6 product-item" data-category="<?php echo $product['category']; ?>">
+                <a href="product.php?id=<?php echo $product['id']; ?>" class="text-decoration-none text-reset">
+                    <div class="product-card text-center">
+                        <?php if ($product['badge']): ?>
+                        <div class="product-badge"><?php echo htmlspecialchars($product['badge']); ?></div>
+                        <?php endif; ?>
+                        <img src="assets/logo.png" alt="<?php echo htmlspecialchars($product['name']); ?>" class="img-fluid mb-3 mx-auto d-block" style="max-width:140px;">
+                        <h3 class="h6 mb-2"><?php echo htmlspecialchars($product['name']); ?></h3>
+                        <div class="price-section mb-3">
+                            <?php if ($product['oldPrice']): ?>
+                            <span class="old-price me-2">$<?php echo $product['oldPrice']; ?></span>
+                            <?php endif; ?>
+                            <span class="new-price">$<?php echo $product['price']; ?></span>
+                        </div>
+                        <div class="product-actions d-flex justify-content-center">
+                            <button class="btn btn-outline-primary btn-sm me-2"><i class="far fa-heart"></i></button>
+                            <button class="btn btn-primary btn-sm">Add to Cart</button>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <?php endforeach; ?>
+        </div>
+    </div>
+</section>
+
+<style>
+.hero-section {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    min-height: 500px;
+    display: grid;
+    align-items: center;
+}
+
+.price-tag {
+    font-size: 2rem;
+}
+
+.old-price {
+    text-decoration: line-through;
+    color: #6c757d;
+    margin-right: 1rem;
+}
+
+.new-price {
+    color: #dc3545;
+    font-weight: bold;
+}
+
+.category-card {
+    height: 150px;
+    padding: 1.5rem;
+    background: #fff;
+    border-radius: 8px;
+    transition: transform 0.3s;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.category-card:hover {
+    transform: translateY(-5px);
+}
+
+.icon-wrapper {
+    font-size: 2rem;
+    color: #007bff;
+}
+
+.deal-card {
+    box-shadow: 5px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.category-tag {
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
+.stock-info {
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
+.product-card {
+    background: #fff;
+    padding: 1rem;
+    border-radius: 8px;
+    box-shadow: 3px 5px 4px 2px rgba(0,0,0,0.05);
+    position: relative;
+    transition: transform 0.3s;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+}
+
+.product-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: #dc3545;
+    color: #fff;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.8rem;
+}
+
+.product-actions {
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.product-card:hover .product-actions {
+    opacity: 1;
+}
+</style>
+
+<?php
+$content = ob_get_clean();
+include __DIR__ . '/layout.php';
+?>
