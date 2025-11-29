@@ -16,3 +16,91 @@ nav a.router-link-exact-active {
 .testing-component {
     /* Add any specific styles for the testing component here */
 }
+
+.hero-section {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    min-height: 500px;
+    display: grid;
+    align-items: center;
+}
+
+.price-tag {
+    font-size: 2rem;
+}
+
+.old-price {
+    text-decoration: line-through;
+    color: #6c757d;
+    margin-right: 1rem;
+}
+
+.new-price {
+    color: #dc3545;
+    font-weight: bold;
+}
+
+.category-card {
+    height: 150px;
+    padding: 1.5rem;
+    background: #fff;
+    border-radius: 8px;
+    transition: transform 0.3s;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.category-card:hover {
+    transform: translateY(-5px);
+}
+
+.icon-wrapper {
+    font-size: 2rem;
+    color: #007bff;
+}
+
+.deal-card {
+    box-shadow: 5px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.category-tag {
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
+.stock-info {
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
+.product-card {
+    background: #fff;
+    padding: 1rem;
+    border-radius: 8px;
+    box-shadow: 3px 5px 4px 2px rgba(0,0,0,0.05);
+    position: relative;
+    transition: transform 0.3s;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+}
+
+.product-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: #dc3545;
+    color: #fff;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.8rem;
+}
+
+.product-actions {
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.product-card:hover .product-actions {
+    opacity: 1;
+}
