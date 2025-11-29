@@ -98,13 +98,13 @@
                     </div>
 
                     <div class="row g-3" id="searchResultsContainer">
-                        <?php for ($n = 1; $n <= 12; $n++): ?>
+                        <?php foreach ($products as $product) { ?>
                             <div class="col-sm-6 col-md-4">
-                                <a href="product.php?id=<?php echo $n; ?>" class="text-decoration-none text-reset">
+                                <a href="product.php?id=<?php echo $product['id']; ?>" class="text-decoration-none text-reset">
                                     <div class="card h-100 product-card p-3">
-                                        <img src="assets/logo.png" class="card-img-top mx-auto d-block" alt="product" style="max-width:120px;">
+                                        <img src="images/<?php echo $product['prd_image_url']; ?>" class="card-img-top mx-auto d-block" alt="product" style="max-width:120px;">
                                         <div class="card-body p-2 text-center">
-                                            <h6 class="card-title mb-1">Product <?php echo $n; ?></h6>
+                                            <h6 class="card-title mb-1">Product <?php echo $product['prd_name']; ?></h6>
                                             <p class="text-muted mb-2">Category • Tag</p>
                                             <div class="d-flex justify-content-center gap-2">
                                                 <span class="text-decoration-line-through text-muted">$320</span>
@@ -117,7 +117,7 @@
                                     </div>
                                 </a>
                             </div>
-                        <?php endfor; ?>
+                        <?php } ?>
                     </div>
                 </main>
             </div>
