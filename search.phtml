@@ -17,11 +17,11 @@
                             <label class="form-label">Brand / Manufacturer</label>
                             <div>
                                 <?php
-                                $brands = ['Apple', 'Samsung', 'Dell', 'Sony', 'Logitech'];
-                                foreach ($brands as $brand) {
+                                
+                                foreach ($manufacturers as $manufacturer) {
                                     echo '<div class="form-check">';
-                                    echo '<input class="form-check-input" type="checkbox" id="brand-' . htmlspecialchars($brand) . '" value="' . htmlspecialchars($brand) . '">';
-                                    echo '<label class="form-check-label" for="brand-' . htmlspecialchars($brand) . '">' . htmlspecialchars($brand) . '</label>';
+                                    echo '<input class="form-check-input" type="checkbox" id="brand-' . $manufacturer['fab_name'] . '" value="' . $manufacturer['fab_name'] . '">';
+                                    echo '<label class="form-check-label" for="brand-' . $manufacturer['fab_name'] . '">' . $manufacturer['fab_name'] . '</label>';
                                     echo '</div>';
                                 }
                                 ?>
@@ -31,18 +31,12 @@
                         <div class="mb-3">
                             <label class="form-label">Customer Rating</label>
                             <div>
-                                <?php
-                                $ratings = [
-                                    ['value' => 4, 'label' => '4 Stars & Up'],
-                                    ['value' => 3, 'label' => '3 Stars & Up']
-                                ];
-                                foreach ($ratings as $rating) {
-                                    echo '<div class="form-check">';
-                                    echo '<input class="form-check-input" type="radio" name="rating" id="rating-' . htmlspecialchars($rating['value']) . '" value="' . htmlspecialchars($rating['value']) . '">';
-                                    echo '<label class="form-check-label" for="rating-' . htmlspecialchars($rating['value']) . '">' . htmlspecialchars($rating['label']) . '</label>';
-                                    echo '</div>';
-                                }
-                                ?>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="rating" >
+                                    <label class="form-check-label" for="rating">positive rating</label><br>
+                                    <input class="form-check-input" type="radio" name="rating">
+                                    <label class="form-check-label" for="rating">negative rating</label>
+                                    </div>
                             </div>
                         </div>
 
@@ -57,10 +51,6 @@
                                     <input class="form-check-input" type="radio" id="avail-instock" value="in-stock" name="availability">
                                     <label class="form-check-label" for="avail-instock">In Stock Only</label>
                                 </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" id="avail-preorder" value="pre-order" name="availability">
-                                    <label class="form-check-label" for="avail-preorder">Available for Pre-Order</label>
-                                </div>
                             </div>
                         </div>
 
@@ -68,9 +58,8 @@
                             <label class="form-label">Tags</label>
                             <div class="d-flex flex-wrap gap-2">
                                 <?php
-                                $tags = ['new','hot','sale','popular'];
                                 foreach ($tags as $tag) {
-                                    echo '<button class="btn btn-sm btn-outline-secondary" data-tag="' . htmlspecialchars($tag) . '">' . htmlspecialchars($tag) . '</button>';
+                                    echo '<button class="btn btn-sm btn-outline-primary tag-button" onclick="toggleTag(this)" data-tag="' . $tag['tag_name'] . '">' . $tag['tag_name'] . '</button>';
                                 }
                                 ?>
                             </div>
@@ -106,6 +95,15 @@
                                         <div class="card-body p-2 text-center">
                                             <h6 class="card-title mb-1">Product <?php echo $product['prd_name']; ?></h6>
                                             <p class="text-muted mb-2">Category • Tag</p>
+                                            <p class="text-muted mb-2">Tags:
+                                                <?php
+                                                if (!empty($product['tag'])) {
+                                                    echo implode(', ', $product['tag']);
+                                                } else {
+                                                    echo 'None';
+                                                }
+                                                ?>
+                                            </p>
                                             <div class="d-flex justify-content-center gap-2">
                                                 <span class="text-decoration-line-through text-muted">$320</span>
                                                 <span class="text-danger fw-bold">$299</span>
@@ -123,3 +121,41 @@
             </div>
         </div>
     </section>
+    <script>
+        function toggleTag(button) {
+    button.classList.toggle('tag-button-active');
+}
+    </script>
+    <style>
+    .tag-button-active {
+        background-color: #007bff !important;
+        color: #fff !important;
+        border-color: #007bff !important;
+    }
+    .product-card img {
+  padding-top: 1rem;
+}
+
+.product-card .card-body {
+  min-height: 110px;
+}
+
+.search-page .card {
+  border-radius: 8px;
+}
+
+.search-page .form-check-label {
+  cursor: pointer;
+}
+
+.btn-outline-secondary .tag-button-active {
+    background-color: #007bff;
+    color: #fff;
+    border-color: #007bff; /* Ensure border also changes */
+}
+.btn-outline-secondary .tag-button:hover {
+    background-color: #0056b3;
+    color: #fff;
+    border-color: #0056b3; /* Ensure border also changes */
+}
+    </style>
