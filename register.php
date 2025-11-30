@@ -1,8 +1,8 @@
 <?php
 session_start();
-include 'database.php'; // connexion à la base
-
-$error = '';
+$template = 'register';
+include 'layout.phtml';
+include 'db.php'; // connexion à la base
 
 if($_POST) {
     $email = $_POST['email'];
@@ -14,10 +14,11 @@ if($_POST) {
     $confirm_password = $_POST['confirm_password'];
 
     if($password !== $confirm_password) {
-        $error = "Les mots de passe ne correspondent pas !";
+        echo "Les mots de passe ne correspondent pas !";
     } else {
         // Vérifier si email ou username existe déjà
-        $stmt = $db->prepare("SELECT * FROM CLIENT WHERE cl_email = ? OR cl_username = ?");
+        
+        $stmt = $pdo->prepare("SELECT * FROM CLIENT WHERE cl_email = ? OR cl_username = ?");
         $stmt->execute([$email, $username]);
         if($stmt->rowCount() > 0) {
             $error = "Email ou nom d'utilisateur déjà utilisé.";
@@ -26,9 +27,9 @@ if($_POST) {
             $hash = password_hash($password, PASSWORD_DEFAULT);
 
             // Insertion dans la table
-            $insert = $db->prepare("INSERT INTO CLIENT (cl_email, cl_username, pswd, cl_first_name, cl_last_name, cl_phone_number) 
+            $insert = $pdo->prepare("INSERT INTO CLIENT (cl_username,cl_email,cl_pass_word,cl_first_name,cl_last_name,cl_phone_number) 
                                     VALUES (?, ?, ?, ?, ?, ?)");
-            $insert->execute([$email, $username, $hash, $first_name, $last_name, $phone]);
+            $insert->execute([$username,$email, $hash, $first_name, $last_name, $phone]);
 
             $_SESSION['user_id'] = $db->lastInsertId();
             $_SESSION['user_fullname'] = $first_name . ' ' . $last_name;
