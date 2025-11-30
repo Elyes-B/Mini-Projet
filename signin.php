@@ -21,5 +21,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } else {
         $error = "Email ou mot de passe incorrect";
     }
-}
+
 ?>
