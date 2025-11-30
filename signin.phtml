@@ -1,36 +1,39 @@
-
 <section class="signin-page py-5">
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-5">
-                <div class="card">
-                    <div class="card-body p-5">
-                        <h2 class="card-title text-center mb-4">Sign In</h2>
-                        
-                        <form method="POST" action="/signin">
-                            <div class="mb-3">
-                                <label for="email" class="form-label">Email Address</label>
-                                <input type="email" class="form-control" id="email" name="email" required>
-                            </div>
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-5">
+        <div class="card shadow-lg border-0 rounded-4">
+          <div class="card-body p-5">
 
-                            <div class="mb-3">
-                                <label for="password" class="form-label">Password</label>
-                                <input type="password" class="form-control" id="password" name="password" required>
-                            </div>
+            <h2 class="text-center mb-4">Connexion</h2>
 
+            <?php if(isset($error)): ?>
+              <div class="alert alert-danger text-center"><?= $error ?></div>
+            <?php endif; ?>
 
+            <form method="POST" action="signin.php">
 
-                            <button type="submit" class="btn btn-primary btn-lg w-100 mb-3">Sign In</button>
+              <div class="mb-3">
+                <label>Email</label>
+                <input type="email" class="form-control" name="email" required>
+              </div>
 
-                            <hr>
+              <div class="mb-3">
+                <label>Mot de passe</label>
+<input type="password" class="form-control" name="password" required>
+              </div>
 
-                            <p class="text-center mb-0">
-                                Don't have an account? <a href="register.php">Register here</a>
-                            </p>
-                        </form>
-                    </div>
-                </div>
-            </div>
+              <button type="submit" class="btn btn-primary w-100 btn-lg">Se connecter</button>
+
+              <p class="text-center mt-3">
+                Pas de compte ? <a href="register.php">S’inscrire</a>
+              </p>
+
+            </form>
+
+          </div>
         </div>
+      </div>
     </div>
+  </div>
 </section>
