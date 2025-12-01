@@ -1,17 +1,18 @@
 <?php
-session_start();
-$template = 'register';
-include 'layout.phtml';
-include 'db.php'; // connexion à la base
-
+include 'db.php';
+if (isset($_SESSION['client_id'])) {
+    header('Location: home.php');
+    exit();
+}
 if($_POST) {
     $email = $_POST['email'];
-    $username = $_POST['cl_user_name'];
     $first_name = $_POST['cl_first_name'];
     $last_name = $_POST['cl_last_name'];
     $phone = $_POST['cl_phone_number'];
     $password = $_POST['pswd'];
     $confirm_password = $_POST['confirm_password'];
+
+    $username = $first_name . ' ' . $last_name;
 
     if($password !== $confirm_password) {
         echo "Les mots de passe ne correspondent pas !";
@@ -39,4 +40,6 @@ if($_POST) {
         }
     }
 }
+$template = 'register';
+include 'layout.phtml';
 ?>

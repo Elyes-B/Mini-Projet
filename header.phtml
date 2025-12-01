@@ -8,8 +8,13 @@
                     <span><i class="fas fa-envelope"></i> TechZone@gmail.com</span>
                 </div>
                 <div class="user-actions">
-                    <a href="register.php" class="me-3">Register</a>
-                    <a href="signin.php">Sign In</a>
+                    <?php if (isset($_SESSION['client_id'])): ?>
+                        <span>Welcome, <?php echo $_SESSION['client_fullname']; ?></span>
+                        <a href="logout.php" class="ms-3">Logout</a>
+                    <?php else: ?>
+                        <a href="register.php" class="me-3">Register</a>
+                        <a href="signin.php">Sign In</a>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>

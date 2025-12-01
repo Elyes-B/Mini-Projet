@@ -1,8 +1,13 @@
 <?php
 include 'db.php';
+if (!isset($_SESSION['client_id'])) {
+    header('Location: signin.php');
+    exit();
+}
+
 $template = 'search';
 
-// Searching for products
+
 $searchText=isset($_GET['searchText']) ? trim($_GET['searchText']) : '';
 $categoryText=isset($_GET['category']) ? trim($_GET['category']) : 'all';
 if ($categoryText === 'all') {
@@ -22,7 +27,7 @@ $tags = $pdo->prepare("SELECT tag_name FROM Tag");
 $tags->execute();
 $tags = $tags->fetchAll();
 
-// Functions for tagging products
+
 
 function TagNew(&$product){
     $date = $product['prd_added_at'];
@@ -33,7 +38,7 @@ function TagNew(&$product){
 }
 
 function TagSale(&$product){
-    // TagSale logic to be implemented later by user
+
 }
 
 function TagGaming(&$product){
@@ -49,16 +54,13 @@ function TagGaming(&$product){
 
 function TagBestRated(&$product){
 
-    // Requires rating/average-rating fields in product or a separate ratings table.
-    // Not implemented because necessary data is not present.
 }
 
 function TagMostSold(&$product){
-    // Requires sales statistics (units_sold, total_sold, orders, etc.).
-    // Not implemented because necessary data is not present.
+
 }
 
-// Calling those tagging functions
+
 
 foreach ($tags as $tag) {
     for ($i = 0; $i < count($products); $i++) {
@@ -83,7 +85,6 @@ foreach ($tags as $tag) {
 }
 }
 
-// Searching for manufacturers
 $manufacturers=$pdo->prepare("SELECT fab_name FROM Fabricant");
 $manufacturers->execute();
 $manufacturers = $manufacturers->fetchAll();
