@@ -60,7 +60,29 @@ function TagMostSold(&$product){
 
 }
 
+for ($i = 0; $i < count($products); $i++) {
+        $product = &$products[$i];
+        $stmt = $pdo->prepare("SELECT cat_name FROM Categorie WHERE category_id = :category_id");
+        $stmt->execute(['category_id' => $product['category_id']]);
+        $category = $stmt->fetch();
+        $product['category']=$category['cat_name'];
+}
 
+for ($i = 0; $i < count($products); $i++) {
+        $product = &$products[$i];
+        $stmt = $pdo->prepare("SELECT off_discount_amount FROM Offre WHERE product_id = :product_id");
+        $stmt->execute(['product_id' => $product['product_id']]);
+        $category = $stmt->fetch();
+        $product['discount']=$category['off_discount_amount'];
+}
+
+for ($i = 0; $i < count($products); $i++) {
+        $product = &$products[$i];
+        $stmt = $pdo->prepare("SELECT fab_name FROM Fabricant WHERE manufacturer_id = :fabricant_id");
+        $stmt->execute(['fabricant_id' => $product['manufacturer_id']]);
+        $category = $stmt->fetch();
+        $product['manufacturer']=$category['fab_name'];
+}
 
 foreach ($tags as $tag) {
     for ($i = 0; $i < count($products); $i++) {
@@ -89,10 +111,67 @@ $manufacturers=$pdo->prepare("SELECT fab_name FROM Fabricant");
 $manufacturers->execute();
 $manufacturers = $manufacturers->fetchAll();
 
-var_dump($products);
+$filtered = [];
 
-global $products;
-global $tags;
+$minPrice = isset($_GET['minPrice']) && $_GET['minPrice'] !== '' ? floatval($_GET['minPrice']) : null;
+$maxPrice = isset($_GET['maxPrice']) && $_GET['maxPrice'] !== '' ? floatval($_GET['maxPrice']) : null;
+$selectedBrands = isset($_GET['brands']) && is_array($_GET['brands']) ? $_GET['brands'] : [];
+$selectedTags = isset($_GET['tags']) && is_array($_GET['tags']) ? $_GET['tags'] : [];
+$availability = isset($_GET['availability']) ? $_GET['availability'] : null; // 'all' or 'in-stock'
+
+foreach ($products as $product) {
+    $effectivePrice = null;
+    $price = floatval($product['prd_price']);
+    $discount = isset($product['discount']) && is_numeric($product['discount']) ? floatval($product['discount']) : 0;
+    $effectivePrice = $price - $discount;
+
+    if ($minPrice !== null && $effectivePrice !== null && $effectivePrice < $minPrice) {
+        continue;
+    }
+    if ($maxPrice !== null && $effectivePrice !== null && $effectivePrice > $maxPrice) {
+        continue;
+    }
+
+    if (!empty($selectedBrands)) {
+        $manu = $product['manufacturer'];
+        $matchedBrand = false;
+        foreach ($selectedBrands as $b) {
+            if ($manu !== null && strcasecmp($manu, $b) === 0) {
+                $matchedBrand = true;
+                break;
+            }
+        }
+        if (!$matchedBrand) {
+            continue;
+        }
+    }
+    if ($availability === 'in-stock') {
+        $inStock = false;
+        if (isset($product['prd_stock']) && $product['prd_stock'] > 0) $inStock = true;
+        if (!$inStock) continue;
+    }
+
+    if (!empty($selectedTags)) {
+        $productTags = isset($product['tag']) && is_array($product['tag']) ? $product['tag'] : [];
+        $hasTag = false;
+        foreach ($selectedTags as $t) {
+            foreach ($productTags as $pt) {
+                if (strcasecmp(trim($pt), trim($t)) === 0) {
+                    $hasTag = true;
+                    break;
+                }
+            }
+        }
+        if (!$hasTag) continue;
+    }
+
+    $filtered[] = $product;
+}
+
+if (empty($filtered)) {
+    $filtered = $products;
+}
+
 ?>
 
 <?php include 'layout.phtml'; ?>

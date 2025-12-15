@@ -5,6 +5,36 @@ if (!isset($_SESSION['client_id'])) {
     exit();
 }
 
+if ($_POST['action'] == 'cart') {
+    $product_id = isset($_POST['product_id']) ? $_POST['product_id'] : null;
+    $quantity = isset($_POST['quantity']) ? (int)$_POST['quantity'] : 1;
+}
+
+if ($product_id) {
+        $stmt = $pdo->prepare("INSERT INTO Article_Panier (client_id, product_id, cart_quantity) VALUES (:client_id, :product_id, :quantity)
+                               ON DUPLICATE KEY UPDATE cart_quantity = cart_quantity + :quantity");
+        $stmt->execute([
+            'client_id' => (int)$_SESSION['client_id'],
+            'product_id' => $product_id,
+            'quantity' => $quantity
+        ]);
+    }
+if ($_POST['action'] == 'remove') {
+    $product_id = isset($_POST['product_id']) ? $_POST['product_id'] : null;
+    if ($product_id) {
+        $stmt = $pdo->prepare("DELETE FROM Article_Panier WHERE client_id = :client_id AND product_id = :product_id");
+        $stmt->execute([
+            'client_id' => (int)$_SESSION['client_id'],
+            'product_id' => $product_id
+        ]);
+    }
+}
+$products = $pdo->prepare("SELECT p.*, ap.cart_quantity FROM Produit p
+                        JOIN Article_Panier ap ON p.product_id = ap.product_id
+                        WHERE ap.client_id = :client_id");
+$products->execute(['client_id' => (int)$_SESSION['client_id']]);
+$products = $products->fetchAll();
+
 $template = 'cart';
 include 'layout.phtml';
 ?>

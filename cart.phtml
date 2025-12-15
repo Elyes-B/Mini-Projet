@@ -13,35 +13,28 @@
                                 <th>Product</th>
                                 <th>Price</th>
                                 <th>Quantity</th>
-                                <th>Subtotal</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
+                            <?php foreach ($products as $product): ?>
                             <tr>
+                                <form method="POST" action="cart.php">
+                                    <input type="hidden" name="product_id" value="<?= $product['product_id'] ?>">
+                                    <input type="hidden" name="action" value="remove">
+                                
                                 <td>
                                     <div class="d-flex align-items-center">
-                                        <img src="/assets/logo.png" alt="Product" style="max-width: 50px;" class="me-3">
-                                        <span>Sample Product 1</span>
+                                        <img src="<?= $product['prd_image_url'] ?>" alt="Product" style="max-width: 50px;" class="me-3">
+                                        <span><?= $product['prd_name'] ?></span>
                                     </div>
                                 </td>
-                                <td>$99.99</td>
-                                <td><input type="number" class="form-control" style="width: 60px;" value="1" min="1"></td>
-                                <td>$99.99</td>
-                                <td><button class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button></td>
+                                <td>$<?= $product['prd_price'] ?></td>
+                                <td><input type="number" class="form-control" style="width: 60px;" value="<?= $product['cart_quantity'] ?>" min="1"></td>
+                                <td><button type="submit" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button></td>
+                                </form>
                             </tr>
-                            <tr>
-                                <td>
-                                    <div class="d-flex align-items-center">
-                                        <img src="/assets/logo.png" alt="Product" style="max-width: 50px;" class="me-3">
-                                        <span>Sample Product 2</span>
-                                    </div>
-                                </td>
-                                <td>$149.99</td>
-                                <td><input type="number" class="form-control" style="width: 60px;" value="2" min="1"></td>
-                                <td>$299.98</td>
-                                <td><button class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button></td>
-                            </tr>
+                            <?php endforeach; ?>
                         </tbody>
                     </table>
                 </div>
@@ -69,8 +62,8 @@
                             <strong>Total:</strong>
                             <strong>$442.77</strong>
                         </div>
-                        <a href="/checkout" class="btn btn-primary btn-lg w-100 mb-2">Proceed to Checkout</a>
-                        <a href="index.php" class="btn btn-outline-secondary btn-lg w-100">Continue Shopping</a>
+                        <a href="checkout.php" class="btn btn-primary btn-lg w-100 mb-2">Proceed to Checkout</a>
+                        <a href="search.php" class="btn btn-outline-secondary btn-lg w-100">Continue Shopping</a>
                     </div>
                 </div>
             </div>

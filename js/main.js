@@ -24,17 +24,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Cart functionality
-    const addToCartButtons = document.querySelectorAll('.btn-primary');
-    addToCartButtons.forEach(btn => {
-        if (btn.innerHTML.includes('Add to')) {
-            btn.addEventListener('click', function(e) {
-                e.preventDefault();
-                alert('Product added to cart!');
-            });
-        }
-    });
-
+   
     // Wishlist functionality
     const wishlistButtons = document.querySelectorAll('.fa-heart');
     wishlistButtons.forEach(btn => {
@@ -44,15 +34,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Product quantity
-    const quantityInputs = document.querySelectorAll('input[type="number"]');
-    quantityInputs.forEach(input => {
-        input.addEventListener('change', function() {
-            if (this.value < 1) {
-                this.value = 1;
-            }
-        });
-    });
 });
 
 

@@ -1,7 +1,6 @@
 <?php
 
 include 'db.php';
-var_dump($_SESSION);
 $products = [
 ['id' => 1, 'name' => 'Huawei MediaPad', 'price' => 225, 'oldPrice' => 300, 'badge' => '-25%', 'category' => 'featured'],
 ['id' => 2, 'name' => 'Sony MDRZX310W', 'price' => 379, 'oldPrice' => null, 'badge' => null, 'category' => 'best-rated'],

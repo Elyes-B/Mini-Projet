@@ -1,70 +1,99 @@
 
 <section class="product-page py-5">
     <div class="container">
+        <?php if ($error): ?>
+            <div class="alert alert-danger" role="alert">
+                <?php echo $error; ?>
+            </div>
+        <?php elseif ($product): ?>
         <nav aria-label="breadcrumb" class="mb-4">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="index.php">Home</a></li>
+                <li class="breadcrumb-item"><a href="home.php">Home</a></li>
                 <li class="breadcrumb-item"><a href="search.php">Products</a></li>
-                <li class="breadcrumb-item active">Product <?php echo htmlspecialchars($product_id); ?></li>
+                <li class="breadcrumb-item active"><?php echo $product['prd_name']; ?></li>
             </ol>
         </nav>
 
         <div class="row">
             <div class="col-md-5">
                 <div class="card mb-3">
-                    <img src="assets/logo.png" class="card-img" alt="Product" style="max-height: 500px; object-fit: contain; padding: 20px;">
+                    <img src="images/<?php echo $product['prd_image_url']; ?>" class="card-img" alt="<?php echo $product['prd_name']; ?>" style="max-height: 500px; object-fit: contain; padding: 20px;">
                 </div>
             </div>
 
             <div class="col-md-7">
-                <h1>Product <?php echo htmlspecialchars($product_id); ?></h1>
+                <h1><?php echo $product['prd_name']; ?></h1>
                 <div class="mb-3">
-                    <span class="badge bg-warning text-dark me-2">In Stock</span>
-                    <span class="badge bg-info">Free Shipping</span>
-                </div>
-
-                <div class="rating mb-3">
-                    <i class="fas fa-star" style="color: #FFC107;"></i>
-                    <i class="fas fa-star" style="color: #FFC107;"></i>
-                    <i class="fas fa-star" style="color: #FFC107;"></i>
-                    <i class="fas fa-star" style="color: #FFC107;"></i>
-                    <i class="fas fa-star-half-alt" style="color: #FFC107;"></i>
-                    <span class="ms-2">(245 reviews)</span>
+                    <?php if (isset($product['prd_stock']) && $product['prd_stock'] > 0): ?>
+                        <span class="badge bg-success">In Stock</span>
+                    <?php else: ?>
+                        <span class="badge bg-danger">Out of Stock</span>
+                    <?php endif; ?>
+                    <?php if (!empty($product['tag'])): ?>
+                        <?php foreach ($product['tag'] as $tag): ?>
+                            <span class="badge bg-primary ms-1"><?php echo $tag; ?></span>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
                 </div>
 
                 <div class="price-section mb-4">
-                    <h2 class="text-danger">$299.99 <del class="text-muted h5">$399.99</del></h2>
-                    <div class="d-flex align-items-center gap-2">
-                        <span class="badge bg-danger">-25% OFF</span>
-                        <span class="text-muted">Save $100</span>
-                    </div>
+                    <?php 
+                        $originalPrice = floatval($product['prd_price']);
+                        $discount = floatval($product['discount']);
+                        $discountedPrice = $originalPrice - $discount;
+                        $discountPercent = $discount > 0 ? round(($discount / $originalPrice) * 100) : 0;
+                    ?>
+                    <h2>
+                        $<?php echo $discountedPrice; ?>
+                        <?php if ($discount > 0): ?>
+                            <del class="text-muted h5">$<?php echo $originalPrice; ?></del>
+                        <?php endif; ?>
+                    </h2>
+                    <?php if ($discount > 0): ?>
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="badge bg-danger">-<?php echo $discountPercent; ?>% OFF</span>
+                            <span class="text-muted">Save $<?php echo $discount; ?></span>
+                        </div>
+                    <?php endif; ?>
                 </div>
 
                 <p class="text-muted mb-4">
-                    This is a premium product with excellent features and high quality components. 
-                    Perfect for professionals and enthusiasts alike.
+                    <?php echo $product['prd_description']; ?>
                 </p>
 
                 <div class="mb-4">
-                    <h6>Specifications:</h6>
+                    <h6>Product Details:</h6>
                     <ul class="list-unstyled">
-                        <li><strong>Brand:</strong> TechBrand</li>
-                        <li><strong>Model:</strong> TB-2024</li>
-                        <li><strong>Color:</strong> Black</li>
-                        <li><strong>Warranty:</strong> 2 Years</li>
+                        <li><strong>Brand:</strong> <?php echo $product['manufacturer']; ?></li>
+                        <li><strong>Category:</strong> <?php echo $product['category']; ?></li>
+                        <li><strong>Stock Available:</strong> <?php echo $product['prd_stock']?> units</li>
+                        <li><strong>Product ID:</strong> <?php echo $product['product_id']; ?></li>
                     </ul>
                 </div>
-
-                <div class="product-actions mb-4">
+                <?php if ($product['prd_stock'] > 0): ?>
+                <div class="mb-4">
                     <div class="d-flex gap-3 align-items-center">
+                        <form method="POST" action="cart.php">
                         <div>
                             <label for="quantity" class="form-label">Quantity:</label>
-                            <input type="number" id="quantity" class="form-control" value="1" min="1" style="width: 80px;">
+                            <input type="number" id="quantity" class="form-control" name="quantity" value="1" min="1" max="<?php echo $product['prd_stock']; ?>" style="width: 80px;" >
                         </div>
-                        <button class="btn btn-primary btn-lg"><i class="fas fa-shopping-cart me-2"></i>Add to Cart</button>
+                        <input type="hidden" name="action" value="cart">
+                        <input type="hidden" name="product_id" value="<?php echo $product['product_id']; ?>">
+                        <button class="btn btn-primary btn-lg" ><i class="fas fa-shopping-cart me-2"></i>Add to Cart</button>
+                        </form>
+                        <form method="POST" action="wishlist.php">
+                        <input type="hidden" name="product_id" value="<?php echo $product['product_id']; ?>">
+                        <input type="hidden" name="action" value="wishlist">
                         <button class="btn btn-outline-secondary btn-lg"><i class="far fa-heart"></i></button>
+                        </form>
                     </div>
                 </div>
+                <?php else: ?>
+                    <div class="alert alert-warning" role="alert">
+                        This product is currently out of stock.
+                    </div>
+                <?php endif; ?>
 
                 <div class="card mb-4">
                     <div class="card-body">
@@ -78,40 +107,11 @@
                 </div>
             </div>
         </div>
-        <div class="row mt-5">
-            <div class="col-md-12">
-                <h3 class="mb-4">Customer Reviews</h3>
-                <div class="card mb-3">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-start mb-3">
-                            <div>
-                                <strong>John Doe</strong>
-                                <div class="text-warning" style="font-size: 0.9rem;">
-                                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
-                                </div>
-                            </div>
-                            <small class="text-muted">2 days ago</small>
-                        </div>
-                        <p class="card-text">Excellent product! Highly recommended. Best purchase I've made this year.</p>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-start mb-3">
-                            <div>
-                                <strong>Jane Smith</strong>
-                                <div class="text-warning" style="font-size: 0.9rem;">
-                                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
-                                </div>
-                            </div>
-                            <small class="text-muted">1 week ago</small>
-                        </div>
-                        <p class="card-text">Very good quality. Arrived on time as promised. Would buy again!</p>
-                    </div>
-                </div>
+        <?php else: ?>
+            <div class="alert alert-info" role="alert">
+                No product information available.
             </div>
-        </div>
+        <?php endif; ?>
     </div>
 </section>
 

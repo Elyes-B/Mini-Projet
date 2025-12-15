@@ -7,10 +7,11 @@
                     <div class="card p-3 mb-4">
                         <h5 class="mb-3">Filters</h5>
                         <div class="mb-3">
+                            <form action="search.php" method="GET">
                             <label class="form-label">Price</label>
                             <div class="d-flex gap-2">
-                                <input type="number" class="form-control" placeholder="Min" id="minPrice">
-                                <input type="number" class="form-control" placeholder="Max" id="maxPrice">
+                                <input type="number" class="form-control" placeholder="Min" id="minPrice" name="minPrice">
+                                <input type="number" class="form-control" placeholder="Max" id="maxPrice" name="maxPrice">
                             </div>
                         </div>
                         <div class="mb-3">
@@ -18,11 +19,12 @@
                             <div>
                                 <?php
                                 
-                                foreach ($manufacturers as $manufacturer) {
-                                    echo '<div class="form-check">';
-                                    echo '<input class="form-check-input" type="checkbox" id="brand-' . $manufacturer['fab_name'] . '" value="' . $manufacturer['fab_name'] . '">';
-                                    echo '<label class="form-check-label" for="brand-' . $manufacturer['fab_name'] . '">' . $manufacturer['fab_name'] . '</label>';
-                                    echo '</div>';
+                                foreach ($manufacturers as $manufacturer) {?>
+                                    <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="brand-<?php echo $manufacturer['fab_name']; ?>" name="brands[]" value="<?php echo $manufacturer['fab_name']; ?>">
+                                    <label class="form-check-label" for="brand-<?php echo $manufacturer['fab_name']; ?>"><?php echo $manufacturer['fab_name']; ?></label>
+                                    </div>  
+                                <?php
                                 }
                                 ?>
                             </div>
@@ -58,43 +60,41 @@
                             <label class="form-label">Tags</label>
                             <div class="d-flex flex-wrap gap-2">
                                 <?php
-                                foreach ($tags as $tag) {
-                                    echo '<button class="btn btn-sm btn-outline-primary tag-button" onclick="toggleTag(this)" data-tag="' . $tag['tag_name'] . '">' . $tag['tag_name'] . '</button>';
+                                foreach ($tags as $tag) {?>
+                                    <input type="checkbox" name="tags[]" id="tag-<?php echo $tag['tag_name']; ?>" value="<?php echo $tag['tag_name']; ?>" style="display:none;">
+                                   <label class="btn btn-sm btn-outline-primary tag-button" onclick="toggleTag(this)" for="tag-<?php echo $tag['tag_name']; ?>"><?php echo $tag['tag_name']; ?></label>
+                                <?php
                                 }
                                 ?>
                             </div>
                         </div>
 
                         <div class="d-grid">
-                            <button class="btn btn-primary" id="applyFiltersBtn">Apply</button>
+                            <input type="submit" class="btn btn-primary" id="applyFiltersBtn" value="Apply">
                         </div>
+                        <input type="hidden" name="searchText" value="<?php echo isset($_GET['searchText']) ? $_GET['searchText'] : ''; ?>">
+                        <input type="hidden" name="category" value="<?php echo isset($_GET['category']) ? $_GET['category'] : 'all'; ?>">
+                        </form>
                     </div>
                 </aside>
 
                 <main class="col-md-9">
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <div>
-                            <h4 class="mb-0">Search results</h4>
-                            <small class="text-muted">Showing 12 products (design-only)</small>
-                        </div>
-                        <div>
-                            <select class="form-select form-select-sm" style="width: 200px;" id="sortBy">
-                                <option value="relevance">Sort by: Relevance</option>
-                                <option value="price-asc">Price: Low to High</option>
-                                <option value="price-desc">Price: High to Low</option>
-                            </select>
+                            <h4 class="mb-0">Search results for : <?php echo isset($_GET['searchText']) ? $_GET['searchText'] : ''; ?></h4>
+                            <small class="text-muted">Showing <?php echo count($products); ?> products</small>
                         </div>
                     </div>
 
                     <div class="row g-3" id="searchResultsContainer">
-                        <?php foreach ($products as $product) { ?>
+                        <?php foreach ($filtered as $product) { ?>
                             <div class="col-sm-6 col-md-4">
-                                <a href="product.php?id=<?php echo $product['id']; ?>" class="text-decoration-none text-reset">
+                                <a href="product.php?id=<?php echo $product['product_id']; ?>" class="text-decoration-none text-reset">
                                     <div class="card h-100 product-card p-3">
                                         <img src="images/<?php echo $product['prd_image_url']; ?>" class="card-img-top mx-auto d-block" alt="product" style="max-width:120px;">
                                         <div class="card-body p-2 text-center">
                                             <h6 class="card-title mb-1">Product <?php echo $product['prd_name']; ?></h6>
-                                            <p class="text-muted mb-2">Category • Tag</p>
+                                            <p class="text-muted mb-2">Category: <?php echo $product['category']; ?></p>
                                             <p class="text-muted mb-2">Tags:
                                                 <?php
                                                 if (!empty($product['tag'])) {
@@ -104,22 +104,39 @@
                                                 }
                                                 ?>
                                             </p>
+                                            <p>Manufacturer: <?php echo $product['manufacturer']; ?></p>
                                             <div class="d-flex justify-content-center gap-2">
-                                                <span class="text-decoration-line-through text-muted">$320</span>
-                                                <span class="text-danger fw-bold">$299</span>
+                                                <?php if (isset($product['prd_stock']) && $product['prd_stock'] > 0) { ?>
+                                                    <span class="badge bg-success">In Stock</span>
+                                                <?php } else { ?>
+                                                    <span class="badge bg-danger">Out of Stock</span>
+                                                <?php } ?>
+                                                <?php  if (isset($product['discount'])) {?>
+                                                    <span class="text-decoration-line-through text-muted"><?php echo $product['prd_price']; ?></span>
+                                                <?php }
+                                                else {
+                                                ?>
+                                                    <span><?php echo $product['prd_price']; ?></span>
+                                                <?php } ?>
+                                                
+                                                
+                                                <span class="text-danger fw-bold"><?php echo isset($product['discount']) ? '$' . ($product['prd_price'] - $product['discount']) : ''; ?></span>
                                             </div>
                                         </div>
+                                        </a>
                                         <div class="card-footer bg-transparent border-0 text-center">
                                             <button class="btn btn-sm btn-outline-primary">Add to cart</button>
+                                            <button class="btn btn-sm btn-outline-danger">Wishlist</button>
                                         </div>
                                     </div>
-                                </a>
+                                
                             </div>
                         <?php } ?>
                     </div>
                 </main>
             </div>
         </div>
+        
     </section>
     <script>
         function toggleTag(button) {
@@ -151,11 +168,11 @@
 .btn-outline-secondary .tag-button-active {
     background-color: #007bff;
     color: #fff;
-    border-color: #007bff; /* Ensure border also changes */
+    border-color: #007bff;
 }
 .btn-outline-secondary .tag-button:hover {
     background-color: #0056b3;
     color: #fff;
-    border-color: #0056b3; /* Ensure border also changes */
+    border-color: #0056b3;
 }
     </style>
