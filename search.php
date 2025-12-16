@@ -14,11 +14,11 @@ if ($categoryText === 'all') {
     $products=$pdo->prepare("SELECT * FROM Produit WHERE (prd_name LIKE :searchText OR prd_description LIKE :searchText)");
 $products->execute(['searchText' => "%$searchText%", 'category' => $category]);
 } else {
-    $stmt = $pdo->prepare("SELECT id FROM Categorie WHERE cat_name LIKE :category");
+    $stmt = $pdo->prepare("SELECT category_id FROM Categorie WHERE cat_name LIKE :category");
     $stmt->execute(['category' => $categoryText]);
     $category = $stmt->fetch();
-    $products=$pdo->prepare("SELECT * FROM Produit WHERE (prd_name LIKE :searchText OR prd_description LIKE :searchText OR category_id = :category)");
-$products->execute(['searchText' => "%$searchText%", 'category' => $category['id']]);
+    $products=$pdo->prepare("SELECT * FROM Produit WHERE (prd_name LIKE :searchText OR prd_description LIKE :searchText) AND category_id = :category");
+$products->execute(['searchText' => "%$searchText%", 'category' => $category['category_id']]);
 }
 
 $products = $products->fetchAll();
@@ -38,7 +38,12 @@ function TagNew(&$product){
 }
 
 function TagSale(&$product){
-
+    $stmt = $GLOBALS['pdo']->prepare("SELECT off_discount_amount FROM Offre WHERE product_id = :product_id");
+    $stmt->execute(['product_id' => $product['product_id']]);
+    $result = $stmt->fetch();
+    if ($result && isset($result['off_discount_amount']) && $result['off_discount_amount'] > 0) {
+        $product['tag'][]='Sale';
+    }
 }
 
 function TagGaming(&$product){
@@ -53,11 +58,12 @@ function TagGaming(&$product){
 }
 
 function TagBestRated(&$product){
-
-}
-
-function TagMostSold(&$product){
-
+    $stmt = $GLOBALS['pdo']->prepare("SELECT AVG(rev_rating) as avg_rating FROM Avis WHERE product_id = :product_id");
+    $stmt->execute(['product_id' => $product['product_id']]);
+    $result = $stmt->fetch();
+    if ($result && isset($result['avg_rating']) && $result['avg_rating'] >= 4.5) {
+        $product['tag'][]='Best Rated';
+    }
 }
 
 for ($i = 0; $i < count($products); $i++) {
@@ -104,8 +110,20 @@ foreach ($tags as $tag) {
             TagMostSold($product);
             break;
     }
+    unset($product);
 }
 }
+
+function Rating($product_id){
+    $stmt = $GLOBALS['pdo']->prepare("SELECT AVG(rev_rating) as avg_rating FROM Avis WHERE product_id = :product_id");
+    $stmt->execute(['product_id' => $product_id]);
+    $result = $stmt->fetch();
+    if ($result && isset($result['avg_rating'])) {
+        return $result['avg_rating'];
+    }
+    return null;
+}
+
 
 $manufacturers=$pdo->prepare("SELECT fab_name FROM Fabricant");
 $manufacturers->execute();
@@ -117,19 +135,25 @@ $minPrice = isset($_GET['minPrice']) && $_GET['minPrice'] !== '' ? floatval($_GE
 $maxPrice = isset($_GET['maxPrice']) && $_GET['maxPrice'] !== '' ? floatval($_GET['maxPrice']) : null;
 $selectedBrands = isset($_GET['brands']) && is_array($_GET['brands']) ? $_GET['brands'] : [];
 $selectedTags = isset($_GET['tags']) && is_array($_GET['tags']) ? $_GET['tags'] : [];
-$availability = isset($_GET['availability']) ? $_GET['availability'] : null; // 'all' or 'in-stock'
+$availability = isset($_GET['availability']) ? $_GET['availability'] : null;
+$rating_type = isset($_GET['rating']) ? $_GET['rating'] : null;
+var_dump($rating_type);
 
+if ($minPrice === null && $maxPrice === null && empty($selectedBrands) && empty($selectedTags) && ($availability === null || $availability === 'all')  && $rating_type === null) {
+    $filtered = $products;
+}
+else{
 foreach ($products as $product) {
     $effectivePrice = null;
     $price = floatval($product['prd_price']);
     $discount = isset($product['discount']) && is_numeric($product['discount']) ? floatval($product['discount']) : 0;
     $effectivePrice = $price - $discount;
 
-    if ($minPrice !== null && $effectivePrice !== null && $effectivePrice < $minPrice) {
-        continue;
+    if ($minPrice !== null && $effectivePrice !== null && $effectivePrice >= $minPrice) {
+        $filtered[] = $product;
     }
-    if ($maxPrice !== null && $effectivePrice !== null && $effectivePrice > $maxPrice) {
-        continue;
+    if ($maxPrice !== null && $effectivePrice !== null && $effectivePrice <= $maxPrice) {
+        $filtered[] = $product;
     }
 
     if (!empty($selectedBrands)) {
@@ -138,40 +162,45 @@ foreach ($products as $product) {
         foreach ($selectedBrands as $b) {
             if ($manu !== null && strcasecmp($manu, $b) === 0) {
                 $matchedBrand = true;
+                $filtered[] = $product;
                 break;
             }
         }
-        if (!$matchedBrand) {
-            continue;
-        }
+        if (!$matchedBrand) continue;
     }
     if ($availability === 'in-stock') {
-        $inStock = false;
-        if (isset($product['prd_stock']) && $product['prd_stock'] > 0) $inStock = true;
-        if (!$inStock) continue;
+        if (isset($product['prd_stock']) && $product['prd_stock'] > 0)
+            $filtered[] = $product;
+        else continue;
     }
 
     if (!empty($selectedTags)) {
-        $productTags = isset($product['tag']) && is_array($product['tag']) ? $product['tag'] : [];
+        $productTags = isset($product['tag'])? $product['tag'] : [];
         $hasTag = false;
         foreach ($selectedTags as $t) {
             foreach ($productTags as $pt) {
                 if (strcasecmp(trim($pt), trim($t)) === 0) {
                     $hasTag = true;
-                    break;
+                    $filtered[] = $product;
+                    break 2;
                 }
             }
         }
         if (!$hasTag) continue;
     }
 
-    $filtered[] = $product;
-}
+    
+        $avgRating = Rating($product['product_id']);
+        if($avgRating !== null){
 
-if (empty($filtered)) {
-    $filtered = $products;
+        if ($avgRating >= 4 && $rating_type === 'positive') {
+            $filtered[] = $product;
+        } elseif ($avgRating <= 2 && $rating_type === 'negative') {
+            $filtered[] = $product;
+        }
+    }
 }
-
+}
 ?>
 
 <?php include 'layout.phtml'; ?>

@@ -1,7 +1,7 @@
 <?php
+    include 'db.php';
 $cartCount = 0;
 if (isset($_SESSION['client_id'])) {
-    include 'db.php';
     $stmt = $pdo->prepare("SELECT SUM(cart_quantity) AS total FROM Article_Panier WHERE client_id = :client_id");
     $stmt->execute(['client_id' => (int)$_SESSION['client_id']]);
     $result = $stmt->fetch();
@@ -10,11 +10,16 @@ if (isset($_SESSION['client_id'])) {
 
 $wishListCount = 0;
 if (isset($_SESSION['client_id'])) {
-    include 'db.php';
     $stmt = $pdo->prepare("SELECT COUNT(*) AS total FROM Article_Souhaits WHERE client_id = :client_id");
     $stmt->execute(['client_id' => (int)$_SESSION['client_id']]);
     $result = $stmt->fetch();
     $wishListCount = $result ? (int)$result['total'] : 0;
+}
+
+$categories = [];
+$stmt = $pdo->query("SELECT DISTINCT cat_name FROM Categorie");
+while ($row = $stmt->fetch()) {
+    $categories[] = $row['cat_name'];
 }
 ?>
 <header class="sticky-header">
@@ -48,7 +53,11 @@ if (isset($_SESSION['client_id'])) {
                     <input type="text" class="form-control" placeholder="Search for products..." name="searchText" value="<?php echo isset($_GET['searchText']) ? htmlspecialchars($_GET['searchText']) : ''; ?>">
                     <select name="category" class="form-select" style="max-width: 150px;">
                         <option value="all">All Categories</option>
-                        <option value="Computers">Computers</option>
+                        <?php foreach ($categories as $category): ?>
+                            <option value="<?php echo $category; ?>" <?php if (isset($_GET['category']) && $_GET['category'] === $category) echo 'selected'; ?>>
+                                <?php echo $category; ?>
+                            </option>
+                        <?php endforeach; ?>
                     </select>
                     <button type="submit" class="btn btn-primary"><i class="fas fa-search"></i></button>
                 </form>

@@ -31,7 +31,6 @@ $products = $pdo->prepare("SELECT p.* FROM Produit p
                         WHERE ap.client_id = :client_id");
 $products->execute(['client_id' => (int)$_SESSION['client_id']]);
 $products = $products->fetchAll();
-var_dump($products);
 
 $template = 'wishlist';
 include 'layout.phtml';

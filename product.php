@@ -48,6 +48,23 @@ if ($product_id) {
                 break;
             }
         }
+        
+
+        
+        $stmt = $pdo->prepare("SELECT a.rev_rating as rating, a.rev_comment as review_text, a.rev_created_at as created_at, c.cl_first_name, c.cl_last_name FROM Avis a JOIN CLIENT c ON a.client_id = c.client_id WHERE a.product_id = :product_id ORDER BY a.rev_created_at DESC");
+        $stmt->execute(['product_id' => $product_id]);
+        $reviews = $stmt->fetchAll();
+        
+        $mostPositive = null;
+        $leastPositive = null;
+        foreach ($reviews as $review) {
+            if ((!$mostPositive || $review['rating'] > $mostPositive['rating']) && $review['rating'] >= 4) {
+                $mostPositive = $review;
+            }
+            if ((!$leastPositive || $review['rating'] < $leastPositive['rating']) && $review['rating'] <= 2) {
+                $leastPositive = $review;
+            }
+        }
     } else {
         $error = "Product not found.";
     }

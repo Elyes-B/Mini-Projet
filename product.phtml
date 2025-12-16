@@ -8,16 +8,16 @@
         <?php elseif ($product): ?>
         <nav aria-label="breadcrumb" class="mb-4">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="home.php">Home</a></li>
-                <li class="breadcrumb-item"><a href="search.php">Products</a></li>
-                <li class="breadcrumb-item active"><?php echo $product['prd_name']; ?></li>
+                <li class="breadcrumb-item"><a href="/Mini-Projet/home.php">Home</a></li>
+                <li class="breadcrumb-item"><a href="/Mini-Projet/search.php">Products</a></li>
+                <li class="breadcrumb-item active"><?php echo htmlspecialchars($product['prd_name']); ?></li>
             </ol>
         </nav>
 
         <div class="row">
             <div class="col-md-5">
                 <div class="card mb-3">
-                    <img src="images/<?php echo $product['prd_image_url']; ?>" class="card-img" alt="<?php echo $product['prd_name']; ?>" style="max-height: 500px; object-fit: contain; padding: 20px;">
+                    <img src="<?php echo $product['prd_image_url']; ?>" class="card-img" alt="<?php echo $product['prd_name']; ?>" style="max-height: 500px; object-fit: contain; padding: 20px;">
                 </div>
             </div>
 
@@ -73,7 +73,7 @@
                 <?php if ($product['prd_stock'] > 0): ?>
                 <div class="mb-4">
                     <div class="d-flex gap-3 align-items-center">
-                        <form method="POST" action="cart.php">
+                        <form method="POST" action="cart.php" style="display: flex; gap: 10px; align-items: center;">
                         <div>
                             <label for="quantity" class="form-label">Quantity:</label>
                             <input type="number" id="quantity" class="form-control" name="quantity" value="1" min="1" max="<?php echo $product['prd_stock']; ?>" style="width: 80px;" >
@@ -94,16 +94,78 @@
                         This product is currently out of stock.
                     </div>
                 <?php endif; ?>
+            </div>
+        </div>
 
-                <div class="card mb-4">
-                    <div class="card-body">
-                        <h6 class="card-title">Shipping Information</h6>
-                        <p class="card-text">
-                            <i class="fas fa-truck me-2"></i> Free Standard Shipping<br>
-                            <i class="fas fa-check me-2"></i> Delivery in 3-5 business days<br>
-                            <i class="fas fa-undo me-2"></i> 30-day return policy
-                        </p>
+        <div class="row mt-5">
+            <div class="col-md-12">
+                <h3 class="mb-4">Customer Reviews</h3>
+                <div class="d-flex gap-3 mb-4">
+                    <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#allReviewsModal">View All Reviews</button>
+                    <button class="btn btn-primary" onclick="writeReview()">Write a Review</button>
+                </div>
+                
+                <div id="writeReviewForm" style="display: none;" class="mb-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Write a Review</h5>
+                            <form method="POST" action="review.php">
+                                <input type="hidden" name="product_id" value="<?php echo $product['product_id']; ?>">
+                                <input type="hidden" name="action" value="review">
+                                <div class="mb-3">
+                                    <label for="rating" class="form-label">Rating:</label>
+                                    <div class="rating-stars" id="ratingStars">
+                                        <i class="fas fa-star" data-rating="1"></i>
+                                        <i class="fas fa-star" data-rating="2"></i>
+                                        <i class="fas fa-star" data-rating="3"></i>
+                                        <i class="fas fa-star" data-rating="4"></i>
+                                        <i class="fas fa-star" data-rating="5"></i>
+                                    </div>
+                                    <input type="hidden" name="rating" id="ratingInput" value="0">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="reviewText" class="form-label">Review:</label>
+                                    <textarea class="form-control" id="reviewText" name="reviewText" rows="4" required></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-success">Submit Review</button>
+                            </form>
+                        </div>
                     </div>
+                </div>
+                
+                <div class="row">
+                    <?php if ($mostPositive): ?>
+                    <div class="col-md-6">
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <h6 class="card-title">Most Positive Review</h6>
+                                <div class="rating mb-2">
+                                    <?php for ($i = 1; $i <= 5; $i++): ?>
+                                        <i class="fas fa-star <?php echo $i <= $mostPositive['rating'] ? 'text-warning' : 'text-muted'; ?>"></i>
+                                    <?php endfor; ?>
+                                </div>
+                                <p class="card-text"><?php echo $mostPositive['review_text']; ?></p>
+                                <small class="text-muted">By <?php echo $mostPositive['cl_first_name'] . ' ' . $mostPositive['cl_last_name']; ?> on <?php echo date('M d, Y', strtotime($mostPositive['created_at'])); ?></small>
+                            </div>
+                        </div>
+                    </div>
+                    <?php endif; ?>
+                    <?php if ($leastPositive): ?>
+                    <div class="col-md-6">
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <h6 class="card-title">Least Positive Review</h6>
+                                <div class="rating mb-2">
+                                    <?php for ($i = 1; $i <= 5; $i++): ?>
+                                        <i class="fas fa-star <?php echo $i <= $leastPositive['rating'] ? 'text-warning' : 'text-muted'; ?>"></i>
+                                    <?php endfor; ?>
+                                </div>
+                                <p class="card-text"><?php echo $leastPositive['review_text']; ?></p>
+                                <small class="text-muted">By <?php echo $leastPositive['cl_first_name'] . ' ' . $leastPositive['cl_last_name']; ?> on <?php echo date('M d, Y', strtotime($leastPositive['created_at'])); ?></small>
+                            </div>
+                        </div>
+                    </div>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
@@ -114,4 +176,82 @@
         <?php endif; ?>
     </div>
 </section>
+
+<!-- All Reviews Modal -->
+<div class="modal fade" id="allReviewsModal" tabindex="-1" aria-labelledby="allReviewsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="allReviewsModalLabel">All Customer Reviews</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <?php if (!empty($reviews)): ?>
+                    <?php foreach ($reviews as $review): ?>
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <div>
+                                        <strong><?php echo htmlspecialchars($review['cl_first_name'] . ' ' . $review['cl_last_name']); ?></strong>
+                                        <div class="rating">
+                                            <?php for ($i = 1; $i <= 5; $i++): ?>
+                                                <i class="fas fa-star <?php echo $i <= $review['rating'] ? 'text-warning' : 'text-muted'; ?>"></i>
+                                            <?php endfor; ?>
+                                        </div>
+                                    </div>
+                                    <small class="text-muted"><?php echo date('M d, Y', strtotime($review['created_at'])); ?></small>
+                                </div>
+                                <p class="card-text"><?php echo htmlspecialchars($review['review_text']); ?></p>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <p class="text-muted">No reviews yet. Be the first to write one!</p>
+                <?php endif; ?>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function writeReview() {
+    const form = document.getElementById('writeReviewForm');
+    form.style.display = form.style.display === 'none' ? 'block' : 'none';
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    const stars = document.querySelectorAll('#ratingStars .fa-star');
+    const ratingInput = document.getElementById('ratingInput');
+    
+    stars.forEach(star => {
+        star.addEventListener('click', function() {
+            const rating = this.getAttribute('data-rating');
+            ratingInput.value = rating;
+            updateStars(rating);
+        });
+        
+        star.addEventListener('mouseover', function() {
+            const rating = this.getAttribute('data-rating');
+            updateStars(rating, true);
+        });
+        
+
+    });
+    
+    function updateStars(rating, hover = false) {
+        stars.forEach((star, index) => {
+            if (index < rating) {
+                star.classList.add('text-warning');
+                star.classList.remove('text-muted');
+            } else {
+                star.classList.remove('text-warning');
+                star.classList.add('text-muted');
+            }
+        });
+    }
+});
+</script>
 

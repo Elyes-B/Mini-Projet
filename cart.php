@@ -35,6 +35,15 @@ $products = $pdo->prepare("SELECT p.*, ap.cart_quantity FROM Produit p
 $products->execute(['client_id' => (int)$_SESSION['client_id']]);
 $products = $products->fetchAll();
 
+$total = 0;
+foreach ($products as $product) {
+    $total += $product['prd_price'] * $product['cart_quantity'];
+}
+
+$numberOfItems = count($products);
+$avgPrice = round($numberOfItems ? $total / $numberOfItems : 0, 2);
+
+$totalAfterShipping = $products!=null ? $total + 10 + 32.8 : 0;
 $template = 'cart';
 include 'layout.phtml';
 ?>
