@@ -137,7 +137,6 @@ $selectedBrands = isset($_GET['brands']) && is_array($_GET['brands']) ? $_GET['b
 $selectedTags = isset($_GET['tags']) && is_array($_GET['tags']) ? $_GET['tags'] : [];
 $availability = isset($_GET['availability']) ? $_GET['availability'] : null;
 $rating_type = isset($_GET['rating']) ? $_GET['rating'] : null;
-var_dump($rating_type);
 
 if ($minPrice === null && $maxPrice === null && empty($selectedBrands) && empty($selectedTags) && ($availability === null || $availability === 'all')  && $rating_type === null) {
     $filtered = $products;
@@ -192,7 +191,6 @@ foreach ($products as $product) {
     
         $avgRating = Rating($product['product_id']);
         if($avgRating !== null){
-
         if ($avgRating >= 4 && $rating_type === 'positive') {
             $filtered[] = $product;
         } elseif ($avgRating <= 2 && $rating_type === 'negative') {
