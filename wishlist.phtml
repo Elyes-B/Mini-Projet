@@ -12,8 +12,18 @@
                     <img src="<?= $product['prd_image_url'] ?>" class="card-img-top" alt="Wishlist Item" style="max-height: 200px; object-fit: contain;">
                     <div class="card-body">
                         <h6 class="card-title"><?= $product['prd_name'] ?></h6>
+                        <?php  if (isset($product['discount'])) {?>
+                                                    <span class="text-decoration-line-through text-muted"><?php echo $product['prd_price']; ?></span>
+                                                <?php }
+                                                else {
+                                                ?>
+                                                    <span><?php echo $product['prd_price']; ?></span>
+                                                <?php } ?>
+                                                
+                                                
+                                                <span class="text-danger fw-bold"><?php echo isset($product['discount']) ? '$' . ($product['prd_price'] - $product['discount']) : ''; ?></span>
                         <div class="d-flex justify-content-between align-items-center mb-3">
-                            <span class="text-danger fw-bold">$<?= $product['prd_price'] ?></span>
+                            
                         </div>
                     </a>
                         <div class="d-flex justify-content-center gap-2">

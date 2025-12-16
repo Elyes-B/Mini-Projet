@@ -10,6 +10,19 @@ $template = 'search';
 
 $searchText=isset($_GET['searchText']) ? trim($_GET['searchText']) : '';
 $categoryText=isset($_GET['category']) ? trim($_GET['category']) : 'all';
+
+$stmt = $pdo->prepare("SELECT category_id FROM Categorie WHERE cat_name LIKE :category");
+$stmt->execute(['category' => $categoryText]);
+$category = $stmt->fetch();
+
+$stmt = $pdo->prepare("INSERT INTO Historique_De_Recherche (search_id, search_text, search_date, client_id,category_id) VALUES (NULL, :search_text, NOW(), :client_id,:category_id)");
+$stmt->execute([
+    'search_text' => $searchText,
+    'client_id' => (int)$_SESSION['client_id'],
+    'category_id' => $category ? $category['category_id'] : null
+]);
+
+
 if ($categoryText === 'all') {
     $products=$pdo->prepare("SELECT * FROM Produit WHERE (prd_name LIKE :searchText OR prd_description LIKE :searchText)");
 $products->execute(['searchText' => "%$searchText%", 'category' => $category]);
@@ -76,7 +89,7 @@ for ($i = 0; $i < count($products); $i++) {
 
 for ($i = 0; $i < count($products); $i++) {
         $product = &$products[$i];
-        $stmt = $pdo->prepare("SELECT off_discount_amount FROM Offre WHERE product_id = :product_id");
+        $stmt = $pdo->prepare("SELECT off_discount_amount FROM Offre WHERE product_id = :product_id AND off_end_date >= NOW()");
         $stmt->execute(['product_id' => $product['product_id']]);
         $category = $stmt->fetch();
         $product['discount']=$category['off_discount_amount'];

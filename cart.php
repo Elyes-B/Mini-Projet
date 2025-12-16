@@ -35,9 +35,17 @@ $products = $pdo->prepare("SELECT p.*, ap.cart_quantity FROM Produit p
 $products->execute(['client_id' => (int)$_SESSION['client_id']]);
 $products = $products->fetchAll();
 
+
+for ($i = 0; $i < count($products); $i++) {
+        $stmt = $pdo->prepare("SELECT off_discount_amount FROM Offre WHERE product_id = :product_id AND off_end_date >= NOW()");
+        $stmt->execute(['product_id' => $products[$i]['product_id']]);
+        $category = $stmt->fetch();
+        $products[$i]['discount']=$category['off_discount_amount'];
+}
+
 $total = 0;
 foreach ($products as $product) {
-    $total += $product['prd_price'] * $product['cart_quantity'];
+    $total += ($product['discount'] ? ($product['prd_price'] - $product['discount']) * $product['cart_quantity'] : $product['prd_price'] * $product['cart_quantity']);
 }
 
 $numberOfItems = count($products);

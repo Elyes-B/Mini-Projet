@@ -32,6 +32,13 @@ $products = $pdo->prepare("SELECT p.* FROM Produit p
 $products->execute(['client_id' => (int)$_SESSION['client_id']]);
 $products = $products->fetchAll();
 
+for ($i = 0; $i < count($products); $i++) {
+        $stmt = $pdo->prepare("SELECT off_discount_amount FROM Offre WHERE product_id = :product_id AND off_end_date >= NOW()");
+        $stmt->execute(['product_id' => $products[$i]['product_id']]);
+        $category = $stmt->fetch();
+        $products[$i]['discount']=$category['off_discount_amount'];
+}
+
 $template = 'wishlist';
 include 'layout.phtml';
 ?>
