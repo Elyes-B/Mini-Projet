@@ -26,25 +26,27 @@
     <div class="container">
         <h2 class="text-center mb-4">Popular Categories</h2>
         <div class="row g-4 d-flex justify-content-center">
-            <?php
-            $categories = [
-                ['id' => 1, 'name' => 'Smartphones & Tablets', 'icon' => 'fas fa-mobile-alt'],
-                ['id' => 2, 'name' => 'Computers & Laptops', 'icon' => 'fas fa-laptop'],
-                ['id' => 3, 'name' => 'Video Games', 'icon' => 'fas fa-gamepad'],
-                ['id' => 4, 'name' => 'Accessories', 'icon' => 'fas fa-headphones'],
-                ['id' => 5, 'name' => 'More', 'icon' => 'fas fa-ellipsis-h']
-            ];
-            foreach ($categories as $category):
-            ?>
-            <div class="col-md-2 col-sm-4 col-6">
-                <div class="category-card text-center">
-                    <div class="icon-wrapper mb-3">
-                        <i class="<?php echo $category['icon']; ?>"></i>
-                    </div>
-                    <h3 class="h6"><?php echo $category['name']; ?></h3>
-                </div>
+<?php
+$categories = $pdo->query('SELECT cat_name, icone FROM categorie')->fetchAll();
+
+foreach ($categories as $category):
+?>
+    <div class="col-md-2 col-sm-4 col-6 mb-3">
+        <a href="search.php?category=<?= urlencode($category['cat_name']) ?>"
+           class="category-btn d-block text-center text-decoration-none">
+
+            <div class="icon-wrapper mb-2">
+                <i class="<?= htmlspecialchars($category['icone']) ?>"></i>
             </div>
-            <?php endforeach; ?>
+
+            <span class="category-title">
+                <?= htmlspecialchars($category['cat_name']) ?>
+            </span>
+        </a>
+    </div>
+<?php endforeach; ?>
+
+
         </div>
     </div>
 </section>
