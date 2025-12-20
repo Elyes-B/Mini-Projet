@@ -1,5 +1,7 @@
 
 <div>
+
+
 <div class="hero-section bg-light py-5">
     <div class="container">
         <div class="row">
@@ -13,148 +15,131 @@
                 <a href="product.php?id=iphone-6s" class="btn btn-primary btn-lg">Shop Now</a>
             </div>
             <div class="col-md-6 d-flex justify-content-center align-items-center">
-                <a href="product.php?id=iphone-6s" class="text-decoration-none text-reset">
-                    <img src="assets/logo.png" alt="iPhone 6s" class="img-fluid" style="max-height: 400px; object-fit: contain;">
-                </a>
+                <img src="assets/logo.png" class="img-fluid" style="max-height:400px;">
             </div>
         </div>
     </div>
 </div>
 
-<!-- Categories Section -->
+
 <section class="categories-section py-5">
     <div class="container">
         <h2 class="text-center mb-4">Popular Categories</h2>
         <div class="row g-4 d-flex justify-content-center">
-<?php
-$categories = $pdo->query('SELECT cat_name, icone FROM categorie')->fetchAll();
-
-foreach ($categories as $category):
-?>
-    <div class="col-md-2 col-sm-4 col-6 mb-3">
-        <a href="search.php?category=<?= urlencode($category['cat_name']) ?>"
-           class="category-btn d-block text-center text-decoration-none">
-
-            <div class="icon-wrapper mb-2">
-                <i class="<?= htmlspecialchars($category['icone']) ?>"></i>
-            </div>
-
-            <span class="category-title">
-                <?= htmlspecialchars($category['cat_name']) ?>
-            </span>
-        </a>
-    </div>
-<?php endforeach; ?>
-
-
-        </div>
-    </div>
-</section>
-
-<!-- Deals Section -->
-<section class="deals-section py-5 bg-light">
-    <div class="container">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2>Echo Deals of the Week</h2>
-        </div>
-
-        <div class="deal-card bg-white p-4 rounded">
-            <div id="dealsCarousel" class="carousel slide" data-bs-ride="carousel">
-                <div class="carousel-inner">
-                    <?php
-                    $deals = [
-                        ['id' => 1, 'name' => 'Beoplay H7', 'category' => 'Headphones', 'oldPrice' => 300, 'newPrice' => 225, 'available' => 6, 'sold' => 28],
-                        ['id' => 2, 'name' => 'Acer Aspire 5', 'category' => 'Laptops', 'oldPrice' => 799, 'newPrice' => 659, 'available' => 12, 'sold' => 43],
-                        ['id' => 3, 'name' => 'Canon EOS M50', 'category' => 'Cameras', 'oldPrice' => 649, 'newPrice' => 579, 'available' => 4, 'sold' => 19],
-                        ['id' => 4, 'name' => 'Samsung Galaxy Tab', 'category' => 'Tablets', 'oldPrice' => 399, 'newPrice' => 349, 'available' => 20, 'sold' => 77]
-                    ];
-                    foreach ($deals as $idx => $deal):
-                    ?>
-                    <div class="carousel-item <?php echo $idx === 0 ? 'active' : ''; ?>">
-                        <div class="row align-items-center">
-                            <div class="col-md-6 text-center">
-                                <a href="product.php?id=<?php echo $deal['id']; ?>" class="text-decoration-none text-reset">
-                                    <img src="assets/logo.png" alt="<?php echo htmlspecialchars($deal['name']); ?>" class="img-fluid" style="max-height:320px; object-fit:contain;">
-                                </a>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="category-tag mb-2"><?php echo $deal['category']; ?></div>
-                                <h3 class="h4 mb-3"><?php echo htmlspecialchars($deal['name']); ?></h3>
-                                <div class="price-section mb-4">
-                                    <span class="old-price me-2">$<?php echo $deal['oldPrice']; ?></span>
-                                    <span class="new-price">$<?php echo $deal['newPrice']; ?></span>
-                                </div>
-                                <div class="stock-info mb-4">
-                                    <span>Available: <?php echo $deal['available']; ?></span>
-                                    <span class="mx-3">|</span>
-                                    <a href="product.php?id=<?php echo $deal['id']; ?>" class="btn btn-primary btn-lg">Shop Now</a>
-                            </div>
-                        </div>
+        <?php
+        $categories = $pdo->query("SELECT cat_name, icone FROM categorie")->fetchAll();
+        foreach ($categories as $category):
+        ?>
+            <div class="col-md-2 col-sm-4 col-6 mb-3">
+                <a href="search.php?category=<?= urlencode($category['cat_name']) ?>"
+                   class="category-btn d-block text-center text-decoration-none">
+                    <div class="icon-wrapper mb-2">
+                        <i class="<?= htmlspecialchars($category['icone']) ?>"></i>
                     </div>
-                    <?php endforeach; ?>
-                </div>
-
-                <button class="carousel-control-prev" type="button" data-bs-target="#dealsCarousel" data-bs-slide="prev">
-                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Previous</span>
-                </button>
-                <button class="carousel-control-next" type="button" data-bs-target="#dealsCarousel" data-bs-slide="next">
-                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Next</span>
-                </button>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Featured Products Section -->
-<section class="featured-products py-5">
-    <div class="container">
-        <div class="tabs-header mb-4">
-            <ul class="nav nav-tabs justify-content-center">
-                <li class="nav-item">
-                    <a class="nav-link active" href="#" data-tab="New">New</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#" data-tab="on-sale">On Sale</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#" data-tab="best-rated">Best Rated</a>
-                </li>
-            </ul>
-        </div>
-
-        <div class="row g-4">
-            <?php
-            foreach ($products as $product):
-            ?>
-            <div class="col-md-3 col-sm-6 product-item" data-category="<?php echo $product['category']; ?>">
-                <a href="product.php?id=<?php echo $product['id']; ?>" class="text-decoration-none text-reset">
-                    <div class="product-card text-center">
-                        <?php if ($product['badge']): ?>
-                        <div class="product-badge"><?php echo htmlspecialchars($product['badge']); ?></div>
-                        <?php endif; ?>
-                        <img src="assets/logo.png" alt="<?php echo htmlspecialchars($product['name']); ?>" class="img-fluid mb-3 mx-auto d-block" style="max-width:140px;">
-                        <h3 class="h6 mb-2"><?php echo htmlspecialchars($product['name']); ?></h3>
-                        <div class="price-section mb-3">
-                            <?php if ($product['oldPrice']): ?>
-                            <span class="old-price me-2">$<?php echo $product['oldPrice']; ?></span>
-                            <?php endif; ?>
-                            <span class="new-price">$<?php echo $product['price']; ?></span>
-                        </div>
-                        <div class="product-actions d-flex justify-content-center">
-                            <button class="btn btn-outline-primary btn-sm me-2"><i class="far fa-heart"></i></button>
-                            <button class="btn btn-primary btn-sm">Add to Cart</button>
-                        </div>
-                    </div>
+                    <span><?= htmlspecialchars($category['cat_name']) ?></span>
                 </a>
             </div>
-            <?php endforeach; ?>
+        <?php endforeach; ?>
         </div>
     </div>
 </section>
+
+<section class="deals-section py-5 bg-light">
+    <div class="container">
+        <h2 class="mb-4">Echo Deals of the Week</h2>
+
+        <div id="dealsCarousel" class="carousel slide">
+            <div class="carousel-inner">
+                <?php
+                $deals = [
+                    ['id'=>1,'name'=>'Beoplay H7'],
+                    ['id'=>2,'name'=>'Acer Aspire 5'],
+                    ['id'=>3,'name'=>'Canon EOS M50']
+                ];
+                foreach ($deals as $i => $deal):
+                ?>
+                <div class="carousel-item <?= $i === 0 ? 'active' : '' ?>">
+                    <div class="row align-items-center">
+                        <div class="col-md-6 text-center">
+                            <img src="assets/logo.png" class="img-fluid" style="max-height:300px;">
+                        </div>
+                        <div class="col-md-6">
+                            <h3><?= $deal['name'] ?></h3>
+                            <a href="product.php?id=<?= $deal['id'] ?>" class="btn btn-primary">Shop Now</a>
+                        </div>
+                    </div>
+                </div>
+                <?php endforeach; ?>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<section class="featured-products py-5">
+    <div class="container">
+
+ 
+        <ul class="nav nav-tabs justify-content-center mb-4">
+            <li class="nav-item">
+                <a class="nav-link <?= ($_GET['tab'] ?? 'new') === 'new' ? 'active' : '' ?>"
+                   href="home.php?tab=new">New</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link <?= ($_GET['tab'] ?? '') === 'sale' ? 'active' : '' ?>"
+                   href="home.php?tab=sale">On Sale</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link <?= ($_GET['tab'] ?? '') === 'best' ? 'active' : '' ?>"
+                   href="home.php?tab=best">Best Rated</a>
+            </li>
+        </ul>
+
+      
+        <div class="row g-4">
+        <?php if (!empty($filteredProducts)): ?>
+            <?php foreach ($filteredProducts as $product): ?>
+            <div class="col-md-3 col-sm-6">
+                <div class="product-card text-center">
+
+                    <?php if (!empty($product['tag'])): ?>
+                        <div class="product-badge">
+                            <?= implode(', ', $product['tag']) ?>
+                        </div>
+                    <?php endif; ?>
+
+                    <img src="assets/logo.png"
+                         class="img-fluid mb-3 mx-auto d-block"
+                         style="max-width:140px;">
+
+                    <h3 class="h6">
+                        <?= htmlspecialchars($product['prd_name']) ?>
+                    </h3>
+
+                    <div class="price-section mb-3">
+                        <span class="new-price">
+                            $<?= $product['prd_price'] ?>
+                        </span>
+                    </div>
+
+                    <div class="product-actions d-flex justify-content-center">
+                        <button class="btn btn-outline-primary btn-sm me-2">
+                            <i class="far fa-heart"></i>
+                        </button>
+                        <button class="btn btn-primary btn-sm">
+                            Add to Cart
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+            <?php endforeach; ?>
+        <?php else: ?>
+            <p class="text-center">No products found</p>
+        <?php endif; ?>
+        </div>
+
+    </div>
+</section>
+
 </div>
-
-<style>
-
-</style>
