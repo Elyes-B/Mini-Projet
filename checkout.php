@@ -29,7 +29,7 @@ if ($_POST['action'] == 'checkout') {
         $address = $stmt->fetch();
         $address_id = $address['address_id'];
 
-        $stmt = $pdo->prepare("INSERT INTO Commande (order_id, client_id,order_date,order_status,address_id) VALUES (NULL, :client_id, NOW(), null, :address_id)");
+        $stmt = $pdo->prepare("INSERT INTO Commande (order_id, client_id,order_date,order_status,address_id) VALUES (NULL, :client_id, NOW(), 'pending', :address_id)");
         $stmt->execute([
             'client_id' => (int)$_SESSION['client_id'],
             'address_id' => (int)$address_id
@@ -42,7 +42,7 @@ if ($_POST['action'] == 'checkout') {
         $order = $stmt->fetch();
         $order_id = $order['order_id'];
 
-        $stmt = $pdo->prepare("select * from Article_Panier where client_id=:client_id");
+        $stmt = $pdo->prepare("SELECT * FROM Article_Panier WHERE client_id=:client_id");
         $stmt->execute([
             'client_id' => (int)$_SESSION['client_id']
         ]);
