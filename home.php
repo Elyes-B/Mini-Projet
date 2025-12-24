@@ -2,8 +2,30 @@
 include 'db.php';
 
 
-$stmt = $pdo->query("SELECT * FROM produit");
+$stmt = $pdo->query("SELECT * FROM Produit where prd_stock > 0 ORDER BY prd_added_at DESC");
 $pro = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+$categoris = $pdo->query("SELECT cat_name FROM Categorie")->fetchAll(PDO::FETCH_ASSOC);
+
+for ($i = 0; $i < count($categoris); $i++) {
+    switch($categoris[$i]['cat_name']) {
+        case 'Laptops':
+            $categoris[$i]['icon'] = 'bi bi-laptop';
+            break;
+        case 'Phones':
+            $categoris[$i]['icon'] = 'bi bi-phone';
+            break;
+        case 'Peripherals':
+            $categoris[$i]['icon'] = 'bi bi-keyboard';
+            break;
+        case 'Computers':
+            $categoris[$i]['icon'] = 'bi bi-pc-display-horizontal';
+            break;
+        case 'Wearables':
+            $categoris[$i]['icon'] = 'bi bi-watch';
+            break;
+    }
+}
 
 
 function TagNew(&$product){
@@ -24,8 +46,10 @@ function TagSale(&$product){
            AND off_end_date >= NOW()"
     );
     $stmt->execute(['id' => $product['product_id']]);
-    if ($stmt->fetch()) {
+    $discount = $stmt->fetch();
+    if ($discount) {
         $product['tag'][] = 'Sale';
+        $product['discount'] = $discount['off_discount_amount'];
     }
 }
 
@@ -36,12 +60,15 @@ function TagBestRated(&$product){
          WHERE product_id = :id"
     );
     $stmt->execute(['id' => $product['product_id']]);
-    $res = $stmt->fetch(PDO::FETCH_ASSOC);
+    $res = $stmt->fetch();
     if ($res && $res['avg_rating'] >= 4.5) {
         $product['tag'][] = 'Best Rated';
     }
 }
 
+$stmt = $pdo->prepare("select p.*,off_discount_amount from Produit p join Offre o on p.product_id = o.product_id where o.off_discount_amount > 0 and o.off_end_date >= NOW() and prd_stock > 0 order by o.off_discount_amount/p.prd_price desc limit 1; ");
+$stmt->execute();
+$bestProduct = $stmt->fetch();
 
 foreach ($pro as &$product) {
     $product['tag'] = [];
@@ -65,8 +92,12 @@ foreach ($pro as $product) {
     if ($tab === 'best' && in_array('Best Rated', $product['tag'])) {
         $filteredProducts[] = $product;
     }
+    if (count($filteredProducts) >= 8) {
+        break;
+    }
 }
 
 
 $template = 'home';
 include 'layout.phtml';
+?>

@@ -7,6 +7,13 @@ if (!isset($_SESSION['client_id'])) {
 
 if ($_POST['action'] == 'cart') {
     $product_id = isset($_POST['product_id']) ? $_POST['product_id'] : null;
+    $stmt = $pdo->prepare("SELECT prd_stock FROM Produit WHERE product_id = :product_id");
+    $stmt->execute(['product_id' => $product_id]);
+    $stmt = $stmt->fetch();
+    if ($stmt["prd_stock"] <1) {
+        header('Location: product.php?id=' . $product_id . '&error=out_of_stock');
+        exit('Produit non trouvé');
+    }
     $quantity = isset($_POST['quantity']) ? (int)$_POST['quantity'] : 1;
 }
 

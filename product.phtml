@@ -10,7 +10,7 @@
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="/Mini-Projet/home.php">Home</a></li>
                 <li class="breadcrumb-item"><a href="/Mini-Projet/search.php">Products</a></li>
-                <li class="breadcrumb-item active"><?php echo htmlspecialchars($product['prd_name']); ?></li>
+                <li class="breadcrumb-item active"><?php echo $product['prd_name']; ?></li>
             </ol>
         </nav>
 
@@ -102,9 +102,22 @@
                 <h3 class="mb-4">Customer Reviews</h3>
                 <div class="d-flex gap-3 mb-4">
                     <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#allReviewsModal">View All Reviews</button>
+                    <?php if (isset($_SESSION['client_id'])): ?>
                     <button class="btn btn-primary" onclick="writeReview()">Write a Review</button>
+                    <?php else: ?>
+                    <a href="signin.php" class="btn btn-primary">Sign in to Write a Review</a>
+                    <?php endif; ?>
                 </div>
-                
+                <p>Average Rating: 
+                    <?php if (isset($product['avg_rating'])): ?>
+                        <?php for ($i = 1; $i <= 5; $i++): ?>
+                            <i class="fas fa-star <?php echo $i <= round($product['avg_rating']) ? 'text-warning' : 'text-muted'; ?>"></i>
+                        <?php endfor; ?>
+                        <span class="ms-2"><?php echo $product['avg_rating']; ?> out of 5</span>
+                    <?php else: ?>
+                        <span>No ratings yet.</span>
+                    <?php endif; ?>
+                </p>
                 <div id="writeReviewForm" style="display: none;" class="mb-4">
                     <div class="card">
                         <div class="card-body">

@@ -1,9 +1,6 @@
 <?php
 include 'db.php';
-if (!isset($_SESSION['client_id'])) {
-    header('Location: signin.php');
-    exit();
-}
+
 
 $template = 'search';
 
@@ -18,7 +15,7 @@ $category = $stmt->fetch();
 $stmt = $pdo->prepare("INSERT INTO Historique_De_Recherche (search_id, search_text, search_date, client_id,category_id) VALUES (NULL, :search_text, NOW(), :client_id,:category_id)");
 $stmt->execute([
     'search_text' => $searchText,
-    'client_id' => (int)$_SESSION['client_id'],
+    'client_id' => ($_SESSION['client_id'] ?? null),
     'category_id' => $category ? $category['category_id'] : null
 ]);
 
@@ -203,13 +200,15 @@ foreach ($products as $product) {
 
     
         $avgRating = Rating($product['product_id']);
-        if($avgRating !== null){
         if ($avgRating >= 4 && $rating_type === 'positive') {
             $filtered[] = $product;
         } elseif ($avgRating <= 2 && $rating_type === 'negative') {
             $filtered[] = $product;
         }
-    }
+        elseif ($rating_type === 'no' && $avgRating === null) {
+            $filtered[] = $product;
+        }
+    
 }
 }
 ?>

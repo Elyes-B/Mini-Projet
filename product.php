@@ -1,9 +1,5 @@
 <?php
 include 'db.php';
-if (!isset($_SESSION['client_id'])) {
-    header('Location: signin.php');
-    exit();
-}
 $template = 'product';
 
 $product_id = isset($_GET['id']) ? $_GET['id'] : null;
@@ -54,6 +50,11 @@ if ($product_id) {
         $stmt = $pdo->prepare("SELECT a.rev_rating as rating, a.rev_comment as review_text, a.rev_created_at as created_at, c.cl_first_name, c.cl_last_name FROM Avis a JOIN CLIENT c ON a.client_id = c.client_id WHERE a.product_id = :product_id ORDER BY a.rev_created_at DESC");
         $stmt->execute(['product_id' => $product_id]);
         $reviews = $stmt->fetchAll();
+        $stmt = $pdo->prepare("SELECT AVG(rev_rating) as avg_rating FROM Avis WHERE product_id = :product_id");
+        $stmt->execute(['product_id' => $product_id]);
+        $avgRatingResult = $stmt->fetch();
+        $avgRating = $avgRatingResult ? round($avgRatingResult['avg_rating'], 2) : null;
+        $product['avg_rating'] = $avgRating;
         
         $mostPositive = null;
         $leastPositive = null;
